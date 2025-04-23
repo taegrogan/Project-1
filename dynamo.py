@@ -5,8 +5,8 @@ from creds import aws_access_key_id, aws_secret_access_key
 dynamodb = boto3.resource(
     'dynamodb',
     region_name='us-east-1',
-    aws_access_key_id=aws_access_key_id,
-    aws_secret_access_key=aws_secret_access_key
+    aws_access_key_id = aws_access_key_id,
+    aws_secret_access_key = aws_secret_access_key
 )
 def get_all_users():
     try:
@@ -41,15 +41,33 @@ def delete_user_dynamo(name):
 def update_user_dynamo(name, data):
     try:
         table = dynamodb.Table('Favorite_Food_Type')
-        update_expression = "SET " + ", ".join(f"#{k} = :{k}" for k in data)
-        expression_names = {f"#{k}": k for k in data}
-        expression_values = {f":{k}": v for k, v in data.items()}
-        table.update_item(
+        print(f"🔄 Updating user: {name} with data: {data}")
+
+        # Use safe placeholders like "#attr0", "#attr1", etc.
+        expression_names = {}
+        expression_values = {}
+        update_parts = []
+
+        for idx, (key, value) in enumerate(data.items()):
+            placeholder = f"#attr{idx}"
+            value_placeholder = f":val{idx}"
+            update_parts.append(f"{placeholder} = {value_placeholder}")
+            expression_names[placeholder] = key
+            expression_values[value_placeholder] = value
+
+        update_expression = "SET " + ", ".join(update_parts)
+
+        response = table.update_item(
             Key={'Name': name},
             UpdateExpression=update_expression,
             ExpressionAttributeNames=expression_names,
-            ExpressionAttributeValues=expression_values
+            ExpressionAttributeValues=expression_values,
+            ReturnValues="UPDATED_NEW"
         )
+
+        print("✅ Update response:", response)
         return {'message': 'User updated successfully'}
+
     except Exception as e:
+        print("❌ Error in update_user_dynamo:", str(e))
         return {'error': str(e)}

@@ -15,12 +15,13 @@ def get_movies_with_companies():
         conn = get_connection()
         with conn.cursor() as cursor:
             query = """
-                SELECT movie.title, movie.release_date, production_company.name
+               SELECT movie.title, movie.release_date, production_company.company_name
                 FROM movie
-                JOIN movie_company ON movie.id = movie_company.movie_id
-                JOIN production_company ON movie_company.company_id = production_company.id;
+                JOIN movie_company ON movie.movie_id = movie_company.movie_id
+                JOIN production_company ON movie_company.company_id = production_company.company_id;
             """
-            cursor.execute(query)
+            cursor.execute(query
+                           )
             return cursor.fetchall()
     except Exception as e:
         return {'error': str(e)}
