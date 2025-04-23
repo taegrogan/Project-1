@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Favorite Foods</title>
+</head>
+<body>
+  <h1>All Users and Their Favorite Foods</h1>
+
+  {% if users %}
+    <ul>
+      {% for user in users %}
+        <li>{{ user }}</li>  <!-- 🔍 This prints full dictionary -->
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No users found in the database.</p>
+  {% endif %}
+
+  <br>
+  <a href="/">Back to Home</a>
+</body>
+</html>

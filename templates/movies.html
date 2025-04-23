@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head><title>Movies</title></head>
+<body>
+    <h1>Movies and Production Companies</h1>
+    {% for movie in movies %}
+        <p><strong>{{ movie["title"] }}</strong> ({{ movie["release_date"] }}) - {{ movie["name"] }}</p>
+    {% endfor %}
+    <a href="/">Back to Home</a>
+</body>
+</html>
